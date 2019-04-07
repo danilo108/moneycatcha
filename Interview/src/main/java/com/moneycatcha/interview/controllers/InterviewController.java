@@ -18,13 +18,30 @@ import com.moneycatcha.interview.controllers.integration.DistanceService;
 import com.moneycatcha.interview.controllers.integration.model.DistanceResponse;
 import com.moneycatcha.interview.controllers.integration.model.TravelMode;
 import com.moneycatcha.interview.controllers.integration.model.UnitType;
-
+/**
+ * 
+ * @author Danilo
+ *
+ */
 @RestController
 public class InterviewController {
 
+	/**
+	 * The service used to get the distance information
+	 */
 	@Autowired
 	DistanceService distanceService;
 
+	/**
+	 * Get the distance from origin to destination. Measure the disance in unit (imperial/metric) and calculate the time
+	 * walking. The method is restricted to the role USER
+	 * The method relies on DestinationService which return a result object that gets translated into a text string
+	 * @param units imperial/metric
+	 * @param origin the place of origin
+	 * @param destination the place of destination
+	 * @param mode (driving/walking)
+	 * @return a text string describing distance and duration of the trip
+	 */
 	@RequestMapping(path = "drive/distance", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<String> getDistancePublic(
 
@@ -34,6 +51,17 @@ public class InterviewController {
 		return getDistance(units, origin, destination, TravelMode.DRIVE);
 	}
 
+	/**
+	 * Get the distance from origin to destination. Measure the disance in unit (imperial/metric) and calculate the time
+	 * walking. The method is restricted to the role USER
+	 * The method relies on DestinationService which return a result object that gets translated into a text string
+	 * @param units imperial/metric
+	 * @param origin the place of origin
+	 * @param destination the place of destination
+	 * @param mode (driving/walking)
+	 * @return a text string describing distance and duration of the trip
+	 */
+
 	@RequestMapping(path = "walk/distance", method = RequestMethod.GET)
 	@Secured("USER")
 	public @ResponseBody ResponseEntity<String> getDistancePrivate(
@@ -41,9 +69,19 @@ public class InterviewController {
 			@RequestParam(name = "units", defaultValue = "imperial") String units,
 			@RequestParam(name = "origin", required = true) String origin,
 			@RequestParam(name = "destination", required = true) String destination) {
-		return getDistance(units, origin, destination, TravelMode.DRIVE);
+		return getDistance(units, origin, destination, TravelMode.WALK);
 	}
 
+	/**
+	 * Get the distance from origin to destination. Measure the disance in unit (imperial/metric) and calculate the time
+	 * depending on the mode (driving/walking)
+	 * The method relies on DestinationService which return a result object that gets translated into a text string
+	 * @param units imperial/metric
+	 * @param origin the place of origin
+	 * @param destination the place of destination
+	 * @param mode (driving/walking)
+	 * @return a text string describing distance and duration of the trip
+	 */
 	private ResponseEntity<String> getDistance(String units, String origin, String destination, TravelMode mode ) {
 		StringBuilder sb = new StringBuilder();
 		UnitType unit;

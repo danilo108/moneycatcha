@@ -168,7 +168,7 @@ public class TestDistanceController {
 		response.setFound(true);
 		response.setDistance(new DistanceValue("800 Km", 8000));
 		response.setDuration(new DistanceValue("8 hours", 8));
-		BDDMockito.given(distanceService.getDistance(UnitType.IMPERIAL, "Brisbane", "Sydney", TravelMode.DRIVE))
+		BDDMockito.given(distanceService.getDistance(UnitType.IMPERIAL, "Brisbane", "Sydney", TravelMode.WALK))
 		
 				.willReturn(response);
 		this.mockMvc
@@ -177,7 +177,7 @@ public class TestDistanceController {
 						.with(user("user").password("secret").roles("USER"))
 						)
 				.andExpect(status().isOk());
-		verify(distanceService).getDistance(UnitType.IMPERIAL, "Brisbane", "Sydney", TravelMode.DRIVE);
+		verify(distanceService).getDistance(UnitType.IMPERIAL, "Brisbane", "Sydney", TravelMode.WALK);
 
 	}
 	
