@@ -27,6 +27,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		String encriptedPassword = passwordEncoder().encode("secret");
-		auth.inMemoryAuthentication().withUser("user").password("secret").roles("USER");
+		auth.inMemoryAuthentication().withUser("user").password(encriptedPassword).roles("USER");
 	}
 }
