@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.hateoas.HateoasProperties;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +35,13 @@ public class InterviewController {
 	}
 
 	@RequestMapping(path = "walk/distance", method = RequestMethod.GET)
+	@Secured("USER")
 	public @ResponseBody ResponseEntity<String> getDistancePrivate(
 
 			@RequestParam(name = "units", defaultValue = "imperial") String units,
 			@RequestParam(name = "origin", required = true) String origin,
 			@RequestParam(name = "destination", required = true) String destination) {
-		return getDistance(units, origin, destination, TravelMode.WALK);
+		return getDistance(units, origin, destination, TravelMode.DRIVE);
 	}
 
 	private ResponseEntity<String> getDistance(String units, String origin, String destination, TravelMode mode ) {
@@ -48,19 +50,19 @@ public class InterviewController {
 		try {
 			unit = UnitType.getEnum(units);
 		} catch (IllegalArgumentException e1) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		try {
 
 			
 			DistanceResponse distance = distanceService.getDistance(unit, origin, destination, mode);
 			if (distance == null) {
-				return new ResponseEntity(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			sb.append(translateResponse(mode, distance));
 
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return new ResponseEntity<>(sb.toString(), HttpStatus.OK);
@@ -77,6 +79,7 @@ public class InterviewController {
 			sb.append(distance.getDistance().getFormatted());
 			sb.append(" and it will take ");
 			sb.append(distance.getDuration().getFormatted());
+			sb.append(" ");
 			sb.append(mode.getMode());
 		} else {
 			sb.append("Unfortunately the origin and / or the destination could not be geo located. Try again!");

@@ -3,7 +3,7 @@ package com.moneycatcha.interview.controllers.integration.model;
 public enum TravelMode {
 
 	
-	DRIVE("driving "), WALK("walking ");
+	DRIVE("driving"), WALK("walking");
 	private final String mode;
 	
 	TravelMode(String mode){
